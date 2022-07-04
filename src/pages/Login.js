@@ -45,6 +45,7 @@ class Login extends React.Component {
 
   render() {
     const { isSaveBtnDisabled, name, isLoading } = this.state;
+
     if (isLoading) {
       return (<Loading />);
     }
