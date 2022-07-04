@@ -35,6 +35,7 @@ class Header extends React.Component {
     return (
       <div data-testid="header-component">
         <div data-testid="header-user-name">
+          Header
           {userName}
         </div>
         <Link data-testid="link-to-search" to="/search">Search</Link>
