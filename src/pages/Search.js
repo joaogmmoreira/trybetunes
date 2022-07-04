@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from './Header';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
+import Loading from './Loading';
 
 class Search extends React.Component {
   constructor() {
@@ -8,6 +11,10 @@ class Search extends React.Component {
     this.state = {
       isBtnDisabled: true,
       inputValue: '',
+      isLoading: false,
+      // isThereReturn: false,
+      copyInputValue: '',
+      albumsList: [],
     };
   }
 
@@ -31,8 +38,40 @@ class Search extends React.Component {
     });
   }
 
+  getList = async () => {
+    const { inputValue } = this.state;
+    this.setState((prevState) => ({
+      isLoading: true,
+      copyInputValue: prevState.inputValue,
+    }));
+    const list = await searchAlbumsAPI(inputValue);
+    this.setState({
+      inputValue: '',
+      isLoading: false,
+      // isThereReturn: true,
+      albumsList: list,
+    });
+  }
+
   render() {
-    const { isBtnDisabled, inputValue } = this.state;
+    const {
+      isBtnDisabled,
+      inputValue,
+      isLoading,
+      // isThereReturn,
+      albumsList,
+      copyInputValue,
+    } = this.state;
+
+    if (isLoading) {
+      return (
+        <div data-testid="page-search">
+          <Header />
+          <Loading />
+        </div>
+      );
+    }
+
     return (
       <div data-testid="page-search">
         <Header />
@@ -51,12 +90,34 @@ class Search extends React.Component {
               data-testid="search-artist-button"
               type="button"
               disabled={ isBtnDisabled }
+              onClick={ this.getList }
             >
               Pesquisar
             </button>
           </label>
         </form>
-      </div>);
+        <div>
+          <h3>
+            {`Resultado de álbuns de:
+            ${copyInputValue}`}
+          </h3>
+          { albumsList.length && copyInputValue
+            ? albumsList.map((element, index) => (
+              <div key={ index }>
+                <img src={ element.artworkUrl100 } alt={ element.collectionName } />
+                <Link
+                  data-testid={ `link-to-album-${element.collectionId}` }
+                  to={ `/album/${element.collectionId} ` }
+                >
+                  { element.collectionName }
+
+                </Link>
+                <p>{ element.artistName }</p>
+              </div>
+            )) : 'Nenhum álbum foi encontrado' }
+        </div>
+      </div>
+    );
   }
 }
 
