@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong } from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
 class MusicCard extends React.Component {
@@ -9,31 +9,32 @@ class MusicCard extends React.Component {
     this.state = {
       isLoading: false,
       isChecked: false,
-      favorite: [],
+      // favorite: [],
     };
   }
 
-  componentDidMount() {
-    this.getFavSongs();
-  }
+  // componentDidMount() {
+  //   this.getFavSongsBack();
+  // }
 
-  getFavSongs = async () => {
-    this.setState({
-      isLoading: true,
-    });
-    const fav = await getFavoriteSongs();
-    console.log(fav);
-    this.setState({
-      isLoading: false,
-      favorite: fav,
-    });
-  }
+  // getFavSongsBack = async () => {
+  //   this.setState({
+  //     isLoading: true,
+  //   });
+  //   const fav = await getFavoriteSongs();
+  //   this.setState({
+  //     isLoading: false,
+  //     favorite: fav,
+  //   });
+  //   console.log(favorite);
+  // }
 
   handleCheck = async ({ target }) => {
     const { trackId } = this.props;
     this.setState({
       isLoading: true,
       isChecked: target.checked,
+      // favorites: [...prevState, target],
     });
     await addSong(trackId);
 
@@ -52,7 +53,7 @@ class MusicCard extends React.Component {
       previewUrl,
       trackId,
     } = this.props;
-    console.log(isChecked);
+    // console.log(isChecked);
     return (
       <>
         <h4>{ trackName }</h4>
@@ -65,11 +66,11 @@ class MusicCard extends React.Component {
         </audio>
         { isLoading
           ? (<Loading />) : (
-            <label data-testid={ `checkbox-music-${trackId}` } htmlFor="favorita">
+            <label data-testid={ `checkbox-music-${trackId}` } htmlFor={ trackId }>
               Favorita
               <input
-                id="favorita"
-                name="favorita"
+                id={ trackId }
+                name={ trackId }
                 type="checkbox"
                 onChange={ this.handleCheck }
                 checked={ isChecked }
