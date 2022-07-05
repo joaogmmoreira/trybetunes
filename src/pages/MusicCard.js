@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
 class MusicCard extends React.Component {
@@ -13,30 +13,32 @@ class MusicCard extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.getFavSongsBack();
-  // }
+  componentDidMount() {
+    this.getFavSongsBack();
+  }
 
-  // getFavSongsBack = async () => {
-  //   this.setState({
-  //     isLoading: true,
-  //   });
-  //   const fav = await getFavoriteSongs();
-  //   this.setState({
-  //     isLoading: false,
-  //     favorite: fav,
-  //   });
-  //   console.log(favorite);
-  // }
-
-  handleCheck = async ({ target }) => {
+  getFavSongsBack = async () => {
+    // const { favorite } = this.state;
     const { trackId } = this.props;
     this.setState({
       isLoading: true,
-      isChecked: target.checked,
-      // favorites: [...prevState, target],
     });
-    await addSong(trackId);
+    const fav = await getFavoriteSongs();
+    const fav2 = fav.some((element) => element.trackId === trackId);
+    console.log(fav);
+    // console.log(fav2);
+    this.setState({
+      isLoading: false,
+      isChecked: fav2,
+    });
+  }
+
+  handleCheck = async ({ target }) => {
+    this.setState({
+      isLoading: true,
+      isChecked: target.checked,
+    });
+    await addSong({ ...this.props });
 
     this.setState({
       isLoading: false,
