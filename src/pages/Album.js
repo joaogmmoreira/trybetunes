@@ -25,7 +25,6 @@ class Album extends React.Component {
     const { match } = this.props;
     const { params } = match;
     const { id } = params;
-    const { songsList } = this.state;
 
     this.setState({
       isLoading: true,
@@ -59,6 +58,7 @@ class Album extends React.Component {
                       <MusicCard
                         trackName={ element.trackName }
                         previewUrl={ element.previewUrl }
+                        trackId={ element.trackId }
                       />
                     </div>
                   ))
